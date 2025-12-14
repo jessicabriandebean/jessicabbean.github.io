@@ -6,7 +6,7 @@
   ],
   "settings": {
     // Default interpreter (fallback)
-    "python.defaultInterpreterPath": "envs/economic_indicators/.venv/bin/python",
+    "python.defaultInterpreterPath": "envs/kpi_recommender_system/.venv/bin/python",
     // Per‑project interpreter overrides
     "python.envFile": "${workspaceFolder}/.env",
     "python.workspaceSymbols.enabled": true,

@@ -3,6 +3,12 @@
 KPI Recommender System - Streamlit Web Application
 Deploy with: streamlit run streamlit_kpi_app.py
 """
+import os
+import sys
+
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(APP_DIR)
+sys.path.append(PARENT_DIR)
 
 import streamlit as st
 import pandas as pd
