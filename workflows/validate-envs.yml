@@ -19,3 +19,6 @@ jobs:
           
       - name: Validate KPI Environment
         run: uv sync --frozen --project envs/kpi_recommender_system
+
+      - name: Validate Portfolio Optimization Environment
+        run: uv sync --frozen --project envs/portfolio_optimization  

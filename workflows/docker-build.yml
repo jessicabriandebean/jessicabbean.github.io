@@ -32,3 +32,12 @@ jobs:
         run: pip install uv
       - name: Build KPI Docker Image
         run: docker build -f projects/kpi_recommender_system/Dockerfile projects/kpi_recommender_system -t kpi-app
+
+  build-portfolio-optimization:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Install uv
+          run: pip install uv
+        - name: Build Portfolio Optimization Docker Image
+          run: docker build -f projects/portfolio_optimization/Dockerfile projects/portfolio_optimization -t portfolio-optimization

@@ -1,14 +1,19 @@
 FROM python:3.11-slim
 
-WORKDIR /app
-
 RUN pip install uv
 
-COPY ../../envs/portfolio_optimization/pyproject.toml .
-COPY ../../envs/portfolio_optimization/uv.lock .
+WORKDIR /app
 
+# Copy environment definition
+COPY ../../envs/portfolio_optimization/pyproject.toml .
+
+# Install dependencies
 RUN uv sync --frozen
 
-COPY . .
+# Copy project code
+COPY src/ ./src/
+COPY app/ ./app/
 
-CMD ["streamlit", "run", "app/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+EXPOSE 8501
+
+CMD ["uv", "run", "streamlit", "run", "app/portfolio_streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
