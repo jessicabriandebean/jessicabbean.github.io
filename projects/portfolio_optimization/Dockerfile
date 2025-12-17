@@ -5,14 +5,11 @@ RUN pip install uv
 WORKDIR /app
 
 # Copy environment definition
-COPY ../../envs/portfolio_optimization/pyproject.toml .
-
-# Install dependencies
+COPY envs/portfolio_optimization/pyproject.toml .
 RUN uv sync --frozen
 
-# Copy project code
-COPY src/ ./src/
-COPY app/ ./app/
+COPY envs/portfolio_optimization/src ./src
+COPY envs/portfolio_optimization/app ./app
 
 EXPOSE 8501
 
