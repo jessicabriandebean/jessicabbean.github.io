@@ -14,12 +14,15 @@ from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings('ignore')
 
-# Import custom modules
+# Import from same directory
 try:
-    from src.portfolio_risk_backtest import PortfolioRiskAnalyzer, PortfolioBacktester
-except ImportError as e:
-    st.error(f"⚠️ Could not import portfolio_risk_backtest.py: {e}")
-    st.stop()
+    from portfolio_optimization.portfolio_risk_backtest import PortfolioRiskAnalyzer, PortfolioBacktester
+except ImportError:
+    # If that doesn't work, try adding current directory to path
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+    from portfolio_optimization import PortfolioRiskAnalyzer, PortfolioBacktester
 
 # Page configuration
 st.set_page_config(

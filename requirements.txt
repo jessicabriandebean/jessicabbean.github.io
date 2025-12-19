@@ -7,3 +7,5 @@ requests
 matplotlib
 yfinance
 fredapi
+scipy
+seaborn

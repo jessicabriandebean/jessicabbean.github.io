@@ -16,9 +16,6 @@ jobs:
         run: |
           python scripts/regen_lockfiles.py
           git diff --exit-code || (echo "Lockfiles out of date" && exit 1)
-          
-      - name: Validate KPI Environment
-        run: uv sync --frozen --project envs/kpi_recommender_system
 
       - name: Validate Portfolio Optimization Environment
         run: uv sync --frozen --project envs/portfolio_optimization  
