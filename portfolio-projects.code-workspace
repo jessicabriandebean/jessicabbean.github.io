@@ -1,0 +1,39 @@
+{
+    "folders": [
+        {
+            "name": "📊 Economic Indicators",
+            "path": "projects/economic_indicators"
+        },
+        {
+            "name": "📈 KPI Recommender",
+            "path": "projects/kpi_recommender_system"
+        },
+        {
+            "name": "💼 Portfolio Optimization",
+            "path": "projects/portfolio_optimization"
+        },
+        {
+            "name": "📱 Product Analytics",
+            "path": "projects/product_analytics"
+        },
+        {
+            "name": "🔧 Environments",
+            "path": "envs"
+        },
+        {
+            "name": "📝 Documentation",
+            "path": "docs"
+        },
+        {
+            "name": "📰 Blog",
+            "path": "blog"
+        }
+    ],
+    "settings": {
+        "python.terminal.activateEnvironment": true,
+        "files.exclude": {
+            "**/.venv": true,
+            "**/__pycache__": true
+        }
+    }
+}

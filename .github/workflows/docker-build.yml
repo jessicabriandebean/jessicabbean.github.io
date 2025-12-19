@@ -1,0 +1,37 @@
+name: Build Project Docker Images
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        project: 
+          - economic_indicators
+          - kpi_recommender_system
+          - portfolio_optimization
+          - product_analytics
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image for ${{ matrix.project }}
+        run: |
+          docker build \
+            --build-arg PROJECT_NAME=${{ matrix.project }} \
+            -t portfolio-projects/${{ matrix.project }}:latest \
+            .
+        
+      - name: Test Docker image
+        run: |
+          docker run --rm portfolio-projects/${{ matrix.project }}:latest python --version
