@@ -10,7 +10,7 @@
 
 ## 🎯 Project Overview
 
-Interactive forecasting platform for US economic indicators (unemployment, inflation, GDP) using time series analysis and machine learning. Achieved **2.3% MAPE** on unemployment predictions.
+Interactive forecasting platform for US economic indicators (unemployment, inflation, GDP) using time series analysis and machine learning. Achieved **1.39% MAPE** on Consumer Price Index predictions.
 
 **🔗 Live Demo:** [https://econ-indicators.streamlit.app](https://econ-indicators.streamlit.app)
 
@@ -35,14 +35,14 @@ Interactive forecasting platform for US economic indicators (unemployment, infla
 
 | Model | MAPE | RMSE | R² Score |
 |-------|------|------|----------|
-| Prophet | 2.3% | 0.18 | 0.94 |
-| ARIMA | 2.8% | 0.21 | 0.91 |
-| LSTM | 3.1% | 0.24 | 0.89 |
+| Prophet | 1.4% | 5.2 | 0.59 |
+| ARIMA | 3.1% | 11.2 | -0.87 |
+| LSTM | 2.02% | 6.54 | -0.56 |
 
 **Key Findings:**
 - Prophet model performed best with seasonal data
 - 12-month forecasts most reliable (MAPE < 3%)
-- Unemployment predictions most accurate during stable periods
+- CPI predictions most accurate during stable periods
 
 ## 🚀 Quick Start
 
