@@ -1,0 +1,29 @@
+[project]
+name = "roof-maxx-analytics"
+version = "1.0.0"
+requires-python = ">=3.11"
+description = "Roof Maxx Market Research & Predictive Analytics Suite"
+readme = false
+
+dependencies = [
+    "streamlit",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn",
+    "folium",
+    "streamlit-folium",
+    "geopandas",
+    "plotly",
+    "requests",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "ipykernel",
+    "jupyter",
+    "black",
+    "ruff"
+]
