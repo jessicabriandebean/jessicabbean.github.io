@@ -17,6 +17,14 @@
             "path": "projects/product_analytics"
         },
         {
+            "name": "📱 Roof Revival",
+            "path": "projects/roof_revival"
+        },
+        {
+            "name": "🧠 NLP Ticket Classifier",
+            "path": "projects/nlp_ticket_classifier"
+        },
+        {
             "name": "🔧 Environments",
             "path": "envs"
         },

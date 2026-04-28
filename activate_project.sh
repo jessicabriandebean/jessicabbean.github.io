@@ -52,6 +52,15 @@ case "$1" in
         echo -e "${BLUE}🐍 Python: $(python --version)${NC}"
         echo -e "${YELLOW}💡 Run 'jupyter notebook' or 'streamlit run app/streamlit_dashboard.py'${NC}"
         ;;
+    nlp|tickets)
+        cd envs/nlp_ticket_classifier
+        source .venv/bin/activate
+        cd ../../projects/nlp_ticket_classifier
+        echo -e "${GREEN}✅ NLP Ticket Classifier environment activated${NC}"
+        echo -e "${BLUE}📂 Current directory: $(pwd)${NC}"
+        echo -e "${BLUE}🐍 Python: $(python --version)${NC}"
+        echo -e "${YELLOW}💡 Run 'jupyter notebook' or 'streamlit run app/streamlit_dashboard.py'${NC}"
+        ;;
     *)
         echo "Usage: source activate_project.sh [PROJECT]"
         echo ""
@@ -61,6 +70,9 @@ case "$1" in
         echo "  portfolio  - Portfolio Optimization"
         echo "  analytics  - Product Analytics"
         echo "  roof       - Roof Maxx Analytics"
+        echo "  nlp        - NLP Ticket Classifier"
         return 1
         ;;
 esac
+
+chmod +x activate_project.sh

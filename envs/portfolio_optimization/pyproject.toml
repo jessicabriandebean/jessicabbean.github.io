@@ -1,19 +1,25 @@
 [project]
-name = "portfolio_optimization"
-version = "0.1.0"
-requires-python = "==3.11.*"
-description = "Portfolio optimization app"
-readme = false
+name = "portfolio-optimization"
+version = "1.0.0"
+description = "Streamlit Portfolio Optimization App"
+requires-python = ">=3.11"
 
 dependencies = [
-    "numpy>=1.26",
-    "pandas>=2.2",
-    "pyarrow",
-    "streamlit>=1.31",
-    "cvxpy>=1.4",
+    "streamlit",
+    "pandas",
+    "numpy",
+    "yfinance",
+    "plotly",
+    "scipy",
+    "matplotlib>=3.10.8",
+    "seaborn>=0.13.2",
 ]
 
 [tool.uv]
 dev-dependencies = [
+    "black",
+    "ruff",
     "pytest",
+    "ipykernel",
+    "jupyter"
 ]

@@ -7,11 +7,11 @@ ENVS = ROOT / "envs"
 PROJECTS = ROOT / "projects"
 BASE_ENV = ENVS / "base"
 
-def create_project(name: str):
-    print(f"Creating project {name}...")
+def create_project(roof_revival: str):
+    print(f"Creating project {roof_revival}...")
 
     # Create env dir
-    env_dir = ENVS / name
+    env_dir = ENVS / roof_revival
     env_dir.mkdir(exist_ok=True)
 
     base_pyproject = BASE_ENV / "pyproject.toml"
@@ -21,7 +21,7 @@ def create_project(name: str):
         print("Warning: base pyproject.toml not found, env will be empty.")
 
     # Create project dir
-    proj_dir = PROJECTS / name
+    proj_dir = PROJECTS / roof_revival
     proj_dir.mkdir(exist_ok=True)
     (proj_dir / "notebooks").mkdir(exist_ok=True)
     (proj_dir / "src").mkdir(exist_ok=True)
@@ -29,12 +29,12 @@ def create_project(name: str):
 
     readme = proj_dir / "README.md"
     if not readme.exists():
-        readme.write_text(f"# {name}\n\nProject scaffold created.\n")
+        readme.write_text(f"# {roof_revival}\n\nProject scaffold created.\n")
 
     print("Done.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python create_project.py <project_name>")
+        print("Usage: python create_project.py roof_revival")
         sys.exit(1)
     create_project(sys.argv[1])

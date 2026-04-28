@@ -103,19 +103,30 @@ class ProductAnalytics:
         dau = self.events.groupby(self.events[date_col].dt.date)['user_id'].nunique().reset_index()
         dau.columns = ['date', 'dau']
         
-        # MAU (rolling 30 days)
-        dau['mau'] = dau['dau'].rolling(window=30, min_periods=1).apply(
-            lambda x: len(set(self.events[
-                (self.events[date_col].dt.date >= x.index[0]) & 
-                (self.events[date_col].dt.date <= x.index[-1])
-            ]['user_id']))
-        )
+        # Convert date back to datetime for proper comparison
+        dau['date'] = pd.to_datetime(dau['date'])
         
-        # Stickiness (DAU/MAU)
-        dau['stickiness'] = (dau['dau'] / dau['mau'] * 100).round(2)
+        # MAU (rolling 30 days) - FIXED VERSION
+        mau_list = []
+        for i, row in dau.iterrows():
+            current_date = row['date']
+            # Get all events in the last 30 days including current date
+            date_30_days_ago = current_date - pd.Timedelta(days=29)  # 29 + today = 30 days
+            
+            mask = (self.events[date_col] >= date_30_days_ago) & (self.events[date_col] <= current_date)
+            mau = self.events[mask]['user_id'].nunique()
+            mau_list.append(mau)
+        
+        dau['mau'] = mau_list
+        
+        # Stickiness (DAU/MAU) — replace 0 MAU with NaN to avoid inf
+        dau['stickiness'] = (dau['dau'] / dau['mau'].replace(0, np.nan) * 100).round(2)
+        
+        # Convert date back to date type for display
+        dau['date'] = dau['date'].dt.date
         
         return dau
-    
+
     def calculate_retention(self, cohort_periods: int = 8) -> pd.DataFrame:
         """
         Calculate cohort retention analysis

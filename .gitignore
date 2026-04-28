@@ -34,3 +34,37 @@ Thumbs.db
 
 # Streamlit
 .streamlit/secrets.toml
+# Virtual environments (local only - don't commit!)
+envs/*/.venv/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# UV
+.uv/
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+
+# OS
+.DS_Store

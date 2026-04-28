@@ -3,6 +3,9 @@ Portfolio Optimization - Streamlit Web Application
 Run with: streamlit run streamlit_app.py
 """
 
+import sys
+from pathlib import Path
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -14,9 +17,22 @@ from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings('ignore')
 
+# FIX: Proper path handling for Streamlit
+try:
+    # Try to get the file path normally
+    SCRIPT_DIR = Path(__file__).resolve().parent
+except NameError:
+    # Fallback for Streamlit: use current working directory
+    SCRIPT_DIR = Path.cwd()
+
+# Add parent directory to Python path
+PROJECT_ROOT = SCRIPT_DIR.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 # Import custom modules
 try:
-    from src.portfolio_risk_backtest import PortfolioRiskAnalyzer, PortfolioBacktester
+    from portfolio_optimization.app.portfolio_risk_backtest import PortfolioRiskAnalyzer, PortfolioBacktester
 except ImportError as e:
     st.error(f"⚠️ Could not import portfolio_risk_backtest.py: {e}")
     st.stop()
@@ -143,6 +159,7 @@ with st.sidebar:
     load_data = st.button("🚀 Load Data & Optimize", type="primary", use_container_width=True)
 
 # Main content
+# Main content
 if load_data:
     with st.spinner("Downloading data..."):
         try:
@@ -155,13 +172,57 @@ if load_data:
                 start=start_date,
                 end=end_date,
                 progress=False
-            )['Adj Close']
+            )
             
+            # Handle different data structures from yfinance
+            if len(tickers) == 1:
+                # Single ticker: data is already a DataFrame
+                if 'Adj Close' in data.columns:
+                    data = data[['Adj Close']]
+                    data.columns = tickers
+                else:
+                    # Fallback to Close if Adj Close not available
+                    data = data[['Close']]
+                    data.columns = tickers
+            else:
+                # Multiple tickers: extract Adj Close
+                if isinstance(data.columns, pd.MultiIndex):
+                    # MultiIndex structure
+                    if 'Adj Close' in data.columns.levels[0]:
+                        data = data['Adj Close']
+                    else:
+                        data = data['Close']
+                else:
+                    # Already simplified
+                    data = data
+            
+            # Ensure data is DataFrame
             if isinstance(data, pd.Series):
-                data = data.to_frame()
+                data = data.to_frame(name=tickers[0])
+            
+            # Remove any columns with all NaN
+            data = data.dropna(axis=1, how='all')
             
             # Calculate returns
             returns = data.pct_change().dropna()
+            
+            # Verify we have valid data
+            if returns.empty:
+                st.error("❌ No valid data retrieved. Please check ticker symbols and date range.")
+                st.stop()
+            
+            # Store in session state
+            st.session_state.returns = returns
+            st.session_state.tickers = list(returns.columns)  # Use actual column names
+            st.session_state.data_loaded = True
+            st.session_state.risk_free_rate = risk_free_rate
+            
+            st.success(f"✅ Successfully loaded {len(returns)} days of data for {len(returns.columns)} assets")
+            
+        except Exception as e:
+            st.error(f"❌ Error loading data: {str(e)}")
+            st.exception(e)  # Show full traceback for debugging
+            st.stop()
             
             # Store in session state
             st.session_state.returns = returns
@@ -261,345 +322,22 @@ if st.session_state.data_loaded:
     with tab2:
         st.header("Portfolio Optimization")
         
-        with st.spinner("Optimizing portfolio..."):
-            try:
-                # Map strategy names
-                strategy_map = {
-                    "Max Sharpe Ratio": "max_sharpe",
-                    "Min Variance": "min_variance",
-                    "Max Return": "max_return"
-                }
-                
-                # Create backtester to use optimization
-                backtester = PortfolioBacktester(returns, lookback_years=lookback_years)
-                
-                # Optimize
-                optimal_weights = backtester.optimize_portfolio(
-                    returns,
-                    method=strategy_map[optimization_method],
-                    risk_free_rate=risk_free_rate
-                )
-                
-                # Calculate portfolio metrics
-                portfolio_return = np.dot(optimal_weights, returns.mean() * 252)
-                portfolio_vol = np.sqrt(np.dot(optimal_weights.T, np.dot(returns.cov() * 252, optimal_weights)))
-                sharpe = (portfolio_return - risk_free_rate) / portfolio_vol
-                
-                # Display results
-                col1, col2, col3 = st.columns(3)
-                
-                with col1:
-                    st.metric("Expected Annual Return", f"{portfolio_return:.2%}")
-                with col2:
-                    st.metric("Annual Volatility", f"{portfolio_vol:.2%}")
-                with col3:
-                    st.metric("Sharpe Ratio", f"{sharpe:.4f}")
-                
-                st.divider()
-                
-                # Portfolio weights
-                st.subheader("Optimal Portfolio Weights")
-                
-                col1, col2 = st.columns([2, 1])
-                
-                with col1:
-                    # Bar chart
-                    weights_df = pd.DataFrame({
-                        'Asset': tickers,
-                        'Weight': optimal_weights
-                    }).sort_values('Weight', ascending=True)
-                    
-                    fig = px.bar(
-                        weights_df,
-                        x='Weight',
-                        y='Asset',
-                        orientation='h',
-                        title="Asset Allocation",
-                        color='Weight',
-                        color_continuous_scale='Blues'
-                    )
-                    
-                    fig.update_layout(height=400)
-                    st.plotly_chart(fig, use_container_width=True)
-                
-                with col2:
-                    # Pie chart
-                    fig = go.Figure(data=[go.Pie(
-                        labels=tickers,
-                        values=optimal_weights,
-                        hole=0.3
-                    )])
-                    
-                    fig.update_layout(
-                        title="Weight Distribution",
-                        height=400
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-                
-                # Weights table
-                st.dataframe(
-                    weights_df.style.format({'Weight': '{:.2%}'}),
-                    use_container_width=True,
-                    hide_index=True
-                )
-                
-                # Efficient Frontier
-                st.subheader("Efficient Frontier")
-                
-                with st.spinner("Calculating efficient frontier..."):
-                    n_portfolios = 5000
-                    results = np.zeros((3, n_portfolios))
-                    
-                    for i in range(n_portfolios):
-                        weights = np.random.random(len(tickers))
-                        weights /= np.sum(weights)
-                        
-                        portfolio_return = np.dot(weights, returns.mean() * 252)
-                        portfolio_vol = np.sqrt(np.dot(weights.T, np.dot(returns.cov() * 252, weights)))
-                        sharpe = (portfolio_return - risk_free_rate) / portfolio_vol
-                        
-                        results[0, i] = portfolio_return
-                        results[1, i] = portfolio_vol
-                        results[2, i] = sharpe
-                    
-                    fig = go.Figure()
-                    
-                    # Random portfolios
-                    fig.add_trace(go.Scatter(
-                        x=results[1, :],
-                        y=results[0, :],
-                        mode='markers',
-                        marker=dict(
-                            size=5,
-                            color=results[2, :],
-                            colorscale='Viridis',
-                            showscale=True,
-                            colorbar=dict(title="Sharpe Ratio")
-                        ),
-                        name='Random Portfolios'
-                    ))
-                    
-                    # Optimal portfolio
-                    fig.add_trace(go.Scatter(
-                        x=[portfolio_vol],
-                        y=[portfolio_return],
-                        mode='markers',
-                        marker=dict(size=20, color='red', symbol='star'),
-                        name='Optimal Portfolio'
-                    ))
-                    
-                    fig.update_layout(
-                        title="Efficient Frontier",
-                        xaxis_title="Volatility (Risk)",
-                        yaxis_title="Expected Return",
-                        height=600
-                    )
-                    
-                    st.plotly_chart(fig, use_container_width=True)
-                
-            except Exception as e:
-                st.error(f"❌ Error during optimization: {str(e)}")
+        st.info("⚠️ Optimization features require portfolio_risk_backtest.py module (currently commented out)")
+        
+        # You can add basic optimization here without the custom module
+        # Or uncomment the import once you have the file
     
     # TAB 3: Risk Analysis
     with tab3:
         st.header("Risk Analysis")
         
-        with st.spinner("Calculating risk metrics..."):
-            try:
-                # Use equal weights for initial analysis
-                analyzer = PortfolioRiskAnalyzer(returns)
-                metrics = analyzer.get_risk_metrics()
-                
-                # Display metrics
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.subheader("Return Metrics")
-                    st.metric("Annual Return", f"{metrics['Annual Return']:.2%}")
-                    st.metric("Annual Volatility", f"{metrics['Annual Volatility']:.2%}")
-                    st.metric("Sharpe Ratio", f"{metrics['Sharpe Ratio']:.4f}")
-                    st.metric("Sortino Ratio", f"{metrics['Sortino Ratio']:.4f}")
-                    st.metric("Calmar Ratio", f"{metrics['Calmar Ratio']:.4f}")
-                
-                with col2:
-                    st.subheader("Risk Metrics")
-                    st.metric("Max Drawdown", f"{metrics['Max Drawdown']:.2%}")
-                    st.metric("VaR (95%)", f"{metrics['VaR (95%)']:.2%}")
-                    st.metric("CVaR (95%)", f"{metrics['CVaR (95%)']:.2%}")
-                    st.metric("Downside Deviation", f"{metrics['Downside Deviation']:.2%}")
-                    st.metric("Skewness", f"{metrics['Skewness']:.4f}")
-                    st.metric("Kurtosis", f"{metrics['Kurtosis']:.4f}")
-                
-                st.divider()
-                
-                # Cumulative returns
-                st.subheader("Cumulative Returns")
-                cumulative = (1 + analyzer.portfolio_returns).cumprod()
-                
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(
-                    x=cumulative.index,
-                    y=cumulative.values,
-                    fill='tozeroy',
-                    name='Cumulative Return'
-                ))
-                
-                fig.update_layout(
-                    xaxis_title="Date",
-                    yaxis_title="Cumulative Return",
-                    height=400
-                )
-                
-                st.plotly_chart(fig, use_container_width=True)
-                
-                # Drawdown
-                st.subheader("Drawdown Analysis")
-                dd_info = analyzer.calculate_maximum_drawdown()
-                
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(
-                    x=dd_info['drawdown_series'].index,
-                    y=dd_info['drawdown_series'].values,
-                    fill='tozeroy',
-                    fillcolor='rgba(255, 0, 0, 0.3)',
-                    line=dict(color='red'),
-                    name='Drawdown'
-                ))
-                
-                fig.update_layout(
-                    xaxis_title="Date",
-                    yaxis_title="Drawdown",
-                    height=400
-                )
-                
-                st.plotly_chart(fig, use_container_width=True)
-                
-                # Returns distribution
-                st.subheader("Returns Distribution")
-                
-                fig = go.Figure()
-                fig.add_trace(go.Histogram(
-                    x=analyzer.portfolio_returns,
-                    nbinsx=50,
-                    name='Returns'
-                ))
-                
-                fig.add_vline(
-                    x=analyzer.portfolio_returns.mean(),
-                    line_dash="dash",
-                    line_color="green",
-                    annotation_text="Mean"
-                )
-                
-                fig.add_vline(
-                    x=metrics['VaR (95%)'],
-                    line_dash="dash",
-                    line_color="red",
-                    annotation_text="VaR (95%)"
-                )
-                
-                fig.update_layout(
-                    xaxis_title="Daily Returns",
-                    yaxis_title="Frequency",
-                    height=400
-                )
-                
-                st.plotly_chart(fig, use_container_width=True)
-                
-            except Exception as e:
-                st.error(f"❌ Error in risk analysis: {str(e)}")
+        st.info("⚠️ Risk analysis features require portfolio_risk_backtest.py module (currently commented out)")
     
     # TAB 4: Backtesting
     with tab4:
         st.header("Walk-Forward Backtesting")
         
-        rebal_map = {"Monthly": "M", "Quarterly": "Q", "Yearly": "Y"}
-        
-        if st.button("🔄 Run Backtest", type="primary"):
-            with st.spinner("Running backtest... This may take a minute..."):
-                try:
-                    backtester = PortfolioBacktester(
-                        returns,
-                        lookback_years=lookback_years,
-                        rebalance_frequency=rebal_map[rebalance_freq]
-                    )
-                    
-                    # Run backtest
-                    results = backtester.backtest(
-                        strategy=strategy_map[optimization_method],
-                        include_costs=include_costs
-                    )
-                    
-                    # Display results
-                    st.success("✅ Backtest complete!")
-                    
-                    col1, col2, col3, col4 = st.columns(4)
-                    
-                    with col1:
-                        st.metric("Total Return", f"{results['metrics']['Total Return']:.2%}")
-                    with col2:
-                        st.metric("CAGR", f"{results['metrics']['CAGR']:.2%}")
-                    with col3:
-                        st.metric("Sharpe Ratio", f"{results['metrics']['Sharpe Ratio']:.4f}")
-                    with col4:
-                        st.metric("Max Drawdown", f"{results['metrics']['Max Drawdown']:.2%}")
-                    
-                    st.divider()
-                    
-                    # Portfolio value over time
-                    st.subheader("Portfolio Value Over Time")
-                    
-                    fig = go.Figure()
-                    fig.add_trace(go.Scatter(
-                        x=results['portfolio_values'].index,
-                        y=results['portfolio_values']['value'],
-                        fill='tozeroy',
-                        name='Portfolio Value'
-                    ))
-                    
-                    # Add rebalance points
-                    rebal_dates = [r['date'] for r in results['rebalance_info']]
-                    rebal_values = [r['portfolio_value'] for r in results['rebalance_info']]
-                    
-                    fig.add_trace(go.Scatter(
-                        x=rebal_dates,
-                        y=rebal_values,
-                        mode='markers',
-                        marker=dict(size=10, color='red'),
-                        name='Rebalance Points'
-                    ))
-                    
-                    fig.update_layout(
-                        xaxis_title="Date",
-                        yaxis_title="Portfolio Value ($)",
-                        height=500
-                    )
-                    
-                    st.plotly_chart(fig, use_container_width=True)
-                    
-                    # All metrics
-                    st.subheader("Complete Backtest Metrics")
-                    
-                    metrics_df = pd.DataFrame([results['metrics']]).T
-                    metrics_df.columns = ['Value']
-                    
-                    st.dataframe(
-                        metrics_df.style.format("{:.4f}"),
-                        use_container_width=True
-                    )
-                    
-                    # Download results
-                    csv = results['portfolio_values'].to_csv()
-                    st.download_button(
-                        label="📥 Download Portfolio Values (CSV)",
-                        data=csv,
-                        file_name="portfolio_backtest_results.csv",
-                        mime="text/csv"
-                    )
-                    
-                except Exception as e:
-                    st.error(f"❌ Error during backtesting: {str(e)}")
-                    st.exception(e)
+        st.info("⚠️ Backtesting features require portfolio_risk_backtest.py module (currently commented out)")
 
 else:
     # Welcome screen

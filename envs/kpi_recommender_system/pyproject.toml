@@ -2,7 +2,7 @@
 name = "kpi-recommender-system"
 version = "1.0.0"
 description = "Streamlit-based KPI recommender system"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 dependencies = [
     "streamlit",
@@ -15,5 +15,7 @@ dependencies = [
 dev-dependencies = [
     "black",
     "ruff",
-    "pytest"
+    "pytest",
+    "ipykernel",
+    "jupyter"
 ]

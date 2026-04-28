@@ -33,6 +33,13 @@
 - Environment: envs/product analytics
 - Lockfile: uv.lock
 
+## roof revival
+- Code: projects/roof revival
+- Purpose: Streamlit dashboard + notebooks
+- Dependencies: streamlit, altair
+- Environment: envs/roof revival
+- Lockfile: uv.lock
+
 
 
 ## Regenerating Lockfiles

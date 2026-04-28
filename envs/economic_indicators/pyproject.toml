@@ -1,7 +1,7 @@
 [project]
 name = "economic_indicators"
 version = "0.1.0"
-requires-python = "==3.11.*"
+requires-python = ">=3.11"
 description = "Economic Indicators Dashboard"
 readme = false
 
@@ -19,5 +19,6 @@ dependencies = [
 [tool.uv]
 dev-dependencies = [
     "pytest",
-    "ipykernel"
+    "ipykernel",
+    "jupyter"
 ]

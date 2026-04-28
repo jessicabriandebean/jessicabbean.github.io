@@ -14,14 +14,7 @@ Interactive forecasting platform for US economic indicators (unemployment, infla
 
 **🔗 Live Demo:** [https://econ-indicators.streamlit.app](https://econ-indicators.streamlit.app)
 
-## ✨ Key Features
-
-- Real-time data collection from FRED API
-- Multiple forecasting models (Prophet, ARIMA, LSTM)
-- Interactive Streamlit dashboard
-- Model performance comparison
-- 3-24 month forecast horizons
-- Confidence intervals and prediction analysis
+## ✨ s
 
 ## 🎬 Demo
 

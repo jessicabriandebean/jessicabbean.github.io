@@ -5,18 +5,18 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 ENVS = ROOT / "envs"
 PROJECTS = ROOT / "projects"
 
-def sync(project_name: str):
-    env_dir = ENVS / project_name
-    proj_dir = PROJECTS / project_name
+def sync(nlp_ticket_classifier: str):
+    env_dir = ENVS / nlp_ticket_classifier
+    proj_dir = PROJECTS / nlp_ticket_classifier
 
     if not env_dir.is_dir():
-        print(f"Skipping {project_name}: no env directory.")
+        print(f"Skipping {nlp_ticket_classifier}: no env directory.")
         return
     if not proj_dir.is_dir():
-        print(f"Skipping {project_name}: no project directory.")
+        print(f"Skipping {nlp_ticket_classifier}: no project directory.")
         return
 
-    print(f"Syncing env for {project_name}...")
+    print(f"Syncing env for {nlp_ticket_classifier}...")
 
     shutil.copy(env_dir / "pyproject.toml", proj_dir / "pyproject.toml")
     lock_file = env_dir / "uv.lock"
