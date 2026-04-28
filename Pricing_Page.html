@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publisher Conversion Services - Pricing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+        
+        .alert {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card.featured {
+            border: 3px solid #667eea;
+            transform: scale(1.05);
+        }
+        
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #FFD700;
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .price {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .price-note {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .nonprofit {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        .nonprofit strong {
+            color: #667eea;
+        }
+        
+        .features {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features li:before {
+            content: "✓";
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            font-size: 1em;
+        }
+        
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+        
+        .info-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+        
+        .info-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .faq {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .faq h3 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        
+        .faq-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .form-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-top: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .card.featured {
+                transform: scale(1);
+            }
+            
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 Publisher Conversion Services</h1>
+            <p class="subtitle">Professional File Conversion • Fast Turnaround • Affordable Pricing</p>
+            <div class="alert">
+                ⏰ Microsoft Publisher is retiring October 13, 2026<br>
+                Don't wait until the last minute—convert your files today!
+            </div>
+        </header>
+        
+        <div class="pricing-cards">
+            <!-- Basic Card -->
+            <div class="card">
+                <h2>Basic</h2>
+                <div class="price">$150</div>
+                <div class="nonprofit">
+                    <strong>Nonprofits:</strong> $112.50 (25% off)
+                </div>
+                <p class="price-note">Perfect for small projects</p>
+                
+                <ul class="features">
+                    <li>Convert .pub files</li>
+                    <li>Editable output (Word/PDF)</li>
+                    <li>Basic formatting cleanup</li>
+                    <li>Unlimited revisions</li>
+                    <li>5-7 day turnaround</li>
+                </ul>
+                
+                <button class="cta-button" onclick="scrollToForm()">Get Started</button>
+            </div>
+            
+            <!-- Standard Card (Featured) -->
+            <div class="card featured">
+                <div class="badge">MOST POPULAR</div>
+                <h2>Standard</h2>
+                <div class="price">$350</div>
+                <div class="nonprofit">
+                    <strong>Nonprofits:</strong> $262.50 (25% off)
+                </div>
+                <p class="price-note">Best for most organizations</p>
+                
+                <ul class="features">
+                    <li>Everything in Basic, plus:</li>
+                    <li>Mail merge setup</li>
+                    <li>Excel data file creation</li>
+                    <li>Template documentation</li>
+                    <li>Unlimited revisions</li>
+                    <li>5-7 day turnaround</li>
+                </ul>
+                
+                <button class="cta-button" onclick="scrollToForm()">Get Started</button>
+            </div>
+            
+            <!-- Premium Card -->
+            <div class="card">
+                <h2>Premium</h2>
+                <div class="price">$750</div>
+                <div class="nonprofit">
+                    <strong>Nonprofits:</strong> $562.50 (25% off)
+                </div>
+                <p class="price-note">Full service + support</p>
+                
+                <ul class="features">
+                    <li>Everything in Standard, plus:</li>
+                    <li>Automation setup</li>
+                    <li>Team training (30 min)</li>
+                    <li>3 months of support</li>
+                    <li>Unlimited revisions</li>
+                    <li>5-7 day turnaround</li>
+                </ul>
+                
+                <button class="cta-button" onclick="scrollToForm()">Get Started</button>
+            </div>
+        </div>
+        
+        <!-- Additional Info -->
+        <div class="info-section">
+            <h3>Special Offers & Details</h3>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>🏦 Volume Discount</h4>
+                    <p>Ordering 5+ conversions? Get an extra 10% off your total!</p>
+                </div>
+                
+                <div class="info-item">
+                    <h4>⛪ Nonprofit Rates</h4>
+                    <p>25% discount for all 501(c)(3) organizations. Just verify your status.</p>
+                </div>
+                
+                <div class="info-item">
+                    <h4>📅 Turnaround Time</h4>
+                    <p>Standard 5-7 business days. Rush options available for urgent projects.</p>
+                </div>
+                
+                <div class="info-item">
+                    <h4>💬 Support</h4>
+                    <p>24-hour response time. Contact us via email, phone, or the form below.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ -->
+        <div class="faq">
+            <h3>Frequently Asked Questions</h3>
+            
+            <div class="faq-item">
+                <h4>❓ What files do you convert?</h4>
+                <p>We convert Microsoft Publisher (.pub) files to editable Word documents, PDFs, and other formats. We preserve all formatting, images, and layouts.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>❓ How long does conversion take?</h4>
+                <p>Standard timeline is 5-7 business days after we receive your files. We can discuss rush options if you need faster turnaround.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>❓ What's the difference between packages?</h4>
+                <p><strong>Basic:</strong> Just the conversion. <strong>Standard:</strong> Includes mail merge setup. <strong>Premium:</strong> Full service with training and support.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>❓ How do I pay?</h4>
+                <p>50% deposit to start, 50% when we deliver. We accept credit cards, bank transfers, and checks.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>❓ What if I need revisions?</h4>
+                <p>Unlimited revisions are included! If you want changes, just let us know and we'll update your files at no extra cost.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>❓ Do you offer training?</h4>
+                <p>Yes! Premium package includes 30 minutes of team training. Basic and Standard packages can add training for an additional fee.</p>
+            </div>
+        </div>
+        
+        <!-- Contact & Order Section -->
+        <div class="form-section" id="form-section">
+            <h3>📝 Place Your Order</h3>
+            <p style="margin-bottom: 20px;">Fill out this quick form and we'll contact you within 24 hours to discuss your project and next steps.</p>
+            
+            <p style="color: #666; font-size: 0.9em; margin-bottom: 20px;">
+                <strong>👉 Click the button below to open the order form in a new window</strong>
+            </p>
+            
+            <a href="https://forms.gle/YOUR-FORM-ID-HERE" target="_blank" class="cta-button">
+                📋 Open Order Form
+            </a>
+            
+            <p style="margin-top: 20px; color: #666; font-size: 0.9em;">
+                <strong>Replace the form link above with your actual Google Form URL!</strong><br>
+                Instructions: Create a Google Form at forms.google.com and paste your form URL above.
+            </p>
+        </div>
+        
+        <footer>
+            <p>&copy; 2026 Publisher Conversion Services. All rights reserved.</p>
+            <p>📞 Questions? Contact us anytime!</p>
+        </footer>
+    </div>
+    
+    <script>
+        function scrollToForm() {
+            document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
