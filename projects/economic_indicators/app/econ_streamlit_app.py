@@ -1,10 +1,10 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from datetime import datetime, timedelta
-from fredapi import Fred
+from datetime import datetime
+import os
+import json
 
 # Page configuration
 st.set_page_config(
@@ -14,292 +14,302 @@ st.set_page_config(
 )
 
 # Title
-st.title("📊 Economic Indicators Analysis Dashboard")
-st.markdown("Analyze and visualize key economic indicators")
+st.title("📊 Economic Indicators Dashboard")
+st.markdown("Analyze and visualize key economic indicators from FRED")
+
+# Default FRED series if file doesn't exist
+DEFAULT_FRED_SERIES = {
+    "GDP": "GDP",
+    "Unemployment Rate": "UNRATE",
+    "Inflation (CPI)": "CPIAUCSL",
+    "Federal Funds Rate": "FEDFUNDS",
+    "S&P 500": "SP500",
+    "10-Year Treasury": "GS10",
+    "Consumer Sentiment": "UMCSENT",
+    "Industrial Production": "INDPRO"
+}
+
+# Try to load fred_series.json, use defaults if not found
+try:
+    # Check if file exists
+    json_path = "fred_series.json"
+    if os.path.exists(json_path):
+        with open(json_path, "r") as f:
+            FRED_SERIES = json.load(f)
+    else:
+        st.info("Using default FRED series (fred_series.json not found)")
+        FRED_SERIES = DEFAULT_FRED_SERIES
+except Exception as e:
+    st.warning(f"Could not load fred_series.json: {e}. Using defaults.")
+    FRED_SERIES = DEFAULT_FRED_SERIES
 
 # Sidebar
 st.sidebar.header("⚙️ Configuration")
 
-# Option to use sample data or upload
-data_source = st.sidebar.radio(
-    "Data Source:",
-    ["Upload CSV", "Use FRED API", "Sample Data"]
-)
+# API Key input
+st.sidebar.markdown("### FRED API Setup")
+st.sidebar.markdown("Get your free API key at [FRED](https://fred.stlouisfed.org/docs/api/api_key.html)")
 
-df = None
+# Check for API key in secrets first, then user input
+api_key = None
 
-# Sample data generator
+# Try to get from Streamlit secrets (recommended for deployment)
+try:
+    api_key = st.secrets["FRED_API_KEY"]
+    st.sidebar.success("✅ API Key loaded from secrets")
+except:
+    # Fall back to user input
+    api_key = st.sidebar.text_input("Enter FRED API Key:", type="password")
+    if api_key:
+        st.sidebar.success("✅ API Key provided")
+    else:
+        st.sidebar.info("👆 Enter your FRED API key to fetch data")
+
+# Data fetching function
+@st.cache_data(ttl=3600)
+def fetch_fred_data(series_id, api_key, start_date=None, end_date=None):
+    """Fetch data from FRED API"""
+    try:
+        from fredapi import Fred
+        fred = Fred(api_key=api_key)
+        
+        data = fred.get_series(
+            series_id,
+            observation_start=start_date,
+            observation_end=end_date
+        )
+        
+        df = pd.DataFrame({
+            'Date': data.index,
+            'Value': data.values
+        })
+        return df
+    except ImportError:
+        st.error("fredapi package not installed. Add 'fredapi' to requirements.txt")
+        return None
+    except Exception as e:
+        st.error(f"Error fetching data for {series_id}: {e}")
+        return None
+
+# Sample data generator (fallback)
 def generate_sample_data():
     """Generate sample economic data"""
     dates = pd.date_range(start='2020-01-01', end='2024-12-31', freq='M')
     data = {
         'Date': dates,
-        'GDP_Growth': [2.1, 2.3, -5.0, -31.4, 33.4, 4.3, 4.5, 6.3, 6.7, 2.3, 
-                       6.9, 5.5, 1.7, 2.9, 3.2, 4.9, 2.0, 2.7, 3.4, 2.6,
-                       3.2, 2.1, 2.8, 3.0, 2.4, 2.9, 1.6, 1.3, 2.5, 2.8,
-                       3.1, 2.4, 2.7, 3.0, 2.2, 2.5, 2.9, 3.1, 2.6, 2.4,
-                       2.7, 2.3, 2.8, 2.5, 3.0, 2.6, 2.4, 2.8, 2.5, 2.7,
-                       2.9, 2.6, 2.4, 2.8, 2.5, 2.7, 2.3, 2.6, 2.4, 2.5],
-        'Unemployment_Rate': [3.6, 3.5, 4.4, 14.7, 13.3, 11.1, 10.2, 8.4, 7.9, 6.9,
-                              6.7, 6.3, 6.2, 6.0, 6.1, 5.9, 5.4, 5.2, 4.0, 3.6,
-                              3.6, 3.8, 3.6, 3.5, 3.4, 3.7, 3.8, 3.9, 3.5, 3.4,
-                              3.6, 3.7, 3.5, 3.4, 3.9, 3.8, 3.7, 3.5, 3.9, 4.0,
-                              3.8, 3.9, 3.7, 4.0, 3.8, 3.9, 4.1, 3.8, 4.0, 3.9,
-                              4.1, 4.0, 4.2, 3.9, 4.1, 4.0, 4.2, 4.1, 4.3, 4.2],
-        'Inflation_Rate': [2.5, 2.3, 1.5, 0.3, 0.6, 1.0, 1.3, 1.2, 1.4, 1.2,
-                          1.4, 1.5, 1.7, 2.6, 4.2, 5.4, 7.0, 8.5, 8.3, 8.0,
-                          7.1, 6.5, 6.0, 5.0, 4.0, 3.7, 3.2, 3.0, 3.4, 3.2,
-                          3.5, 3.7, 3.1, 3.0, 3.2, 3.4, 3.1, 2.9, 3.3, 3.5,
-                          3.2, 3.4, 3.0, 3.1, 2.9, 3.2, 3.4, 2.8, 3.0, 2.9,
-                          3.1, 3.0, 2.8, 2.9, 2.7, 2.8, 2.6, 2.7, 2.5, 2.6],
-        'Interest_Rate': [1.75, 1.75, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
-                         0.25, 0.25, 0.25, 0.25, 0.50, 1.00, 1.75, 2.50, 3.00, 3.25,
-                         3.75, 4.50, 4.75, 5.25, 5.50, 5.50, 5.50, 5.50, 5.25, 5.00,
-                         4.75, 4.50, 4.75, 5.00, 4.75, 4.50, 4.75, 5.00, 4.75, 4.50,
-                         4.75, 4.50, 4.75, 4.50, 4.25, 4.50, 4.25, 4.50, 4.25, 4.00,
-                         4.25, 4.00, 4.25, 4.00, 3.75, 4.00, 3.75, 3.50, 3.75, 3.50]
+        'GDP_Growth': [2.1 + i*0.1 for i in range(len(dates))],
+        'Unemployment_Rate': [5.0 - i*0.02 for i in range(len(dates))],
+        'Inflation_Rate': [2.5 + i*0.05 for i in range(len(dates))],
+        'Interest_Rate': [1.75 + i*0.05 for i in range(len(dates))]
     }
     return pd.DataFrame(data)
 
-# Load data based on selection
-if data_source == "Upload CSV":
-    uploaded_file = st.sidebar.file_uploader("Upload CSV file", type=["csv"])
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        if df.columns[0] != 'Date':
-            df.columns = ['Date'] + list(df.columns[1:])
-        df['Date'] = pd.to_datetime(df['Date'])
-        st.write(df)
-    else:
-        st.info("👈 Please upload a CSV file to begin")
-
-elif data_source == "Use FRED API":
-    st.sidebar.markdown("### FRED API Setup")
-    api_key = st.sidebar.text_input("Enter FRED API Key:", type="password")
+# Main app logic
+if api_key:
+    st.sidebar.markdown("### Select Indicators")
     
-    if api_key:
-        from fredapi import Fred
-        fred = Fred(api_key=api_key)
-        st.sidebar.success("✓ API Key provided")
-        st.sidebar.markdown("Get your free API key at [FRED](https://fred.stlouisfed.org/docs/api/api_key.html)")
-
-        # --- Choose source type for series list ---
-        source_type = st.sidebar.radio("Select series source:", ["JSON", "CSV"])
-
-        if source_type == "JSON":
-            import json
-            with open("fred_series.json", "r") as f:
-                available_series = json.load(f)
-        else:  # CSV
-            df_series = pd.read_csv("fred_series.csv")
-            available_series = dict(zip(df_series["Label"], df_series["SeriesID"]))
-
-        # --- Multiselect dropdown for series ---
-        selected_labels = st.sidebar.multiselect(
-            "Select FRED data fields:",
-            options=list(available_series.keys()),
-            default=[]
-        )
-
-        if selected_labels:
-            data_dict = {}
-            for label in selected_labels:
-                series_id = available_series[label]
-                st.write(f"Fetching {label} ({series_id})...")
-                data_dict[label] = fred.get_series(series_id)
-
-            # Combine into DataFrame
-            df = pd.DataFrame(data_dict)
-            df.index = pd.to_datetime(df.index)
-            df.reset_index(inplace=True)
-            df.rename(columns={"index": "Date"}, inplace=True)
-
-            st.success("✅ FRED data successfully loaded")
-            st.dataframe(df.tail(10))
-    else:
-        st.sidebar.info("Need a FRED API key? [Get one here](https://fred.stlouisfed.org/docs/api/api_key.html)")
-        
-elif data_source == "Sample Data":
-    df = generate_sample_data()
-    st.sidebar.success("✓ Sample data loaded")
-
-# Main dashboard
-if df is not None:
-    # Date range selector
+    # Multi-select for FRED series
+    selected_series = st.sidebar.multiselect(
+        "Choose economic indicators:",
+        options=list(FRED_SERIES.keys()),
+        default=list(FRED_SERIES.keys())[:3]
+    )
+    
+    # Date range
     st.sidebar.markdown("### Date Range")
-    min_date = df['Date'].min()
-    max_date = df['Date'].max()
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        start_date = st.date_input(
+            "Start Date",
+            value=datetime(2020, 1, 1)
+        )
+    with col2:
+        end_date = st.date_input(
+            "End Date",
+            value=datetime.now()
+        )
     
-    date_range = st.sidebar.date_input(
-        "Select date range:",
-        value=(min_date, max_date),
-        min_value=min_date,
-        max_value=max_date
-    )
-    
-    if len(date_range) == 2:
-        mask = (df['Date'] >= pd.to_datetime(date_range[0])) & (df['Date'] <= pd.to_datetime(date_range[1]))
-        df_filtered = df[mask].copy()
-    else:
-        df_filtered = df.copy()
-    
-    # Key metrics
-    st.subheader("📈 Key Metrics Overview")
-    
-    numeric_cols = df_filtered.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    
-    if len(numeric_cols) > 0:
-        cols = st.columns(min(4, len(numeric_cols)))
-        
-        for idx, col_name in enumerate(numeric_cols[:4]):
-            with cols[idx]:
-                current_value = df_filtered[col_name].iloc[-1]
-                previous_value = df_filtered[col_name].iloc[-2] if len(df_filtered) > 1 else current_value
-                change = current_value - previous_value
+    if selected_series:
+        # Fetch data button
+        if st.sidebar.button("📥 Fetch Data", type="primary"):
+            with st.spinner("Fetching data from FRED..."):
+                data_dict = {}
                 
-                st.metric(
-                    label=col_name.replace('_', ' '),
-                    value=f"{current_value:.2f}",
-                    delta=f"{change:.2f}"
+                for series_name in selected_series:
+                    series_id = FRED_SERIES[series_name]
+                    df = fetch_fred_data(
+                        series_id,
+                        api_key,
+                        start_date=start_date.strftime('%Y-%m-%d'),
+                        end_date=end_date.strftime('%Y-%m-%d')
+                    )
+                    
+                    if df is not None:
+                        data_dict[series_name] = df
+                
+                if data_dict:
+                    # Store in session state
+                    st.session_state['data'] = data_dict
+                    st.success(f"✅ Successfully fetched {len(data_dict)} series!")
+        
+        # Display data if available
+        if 'data' in st.session_state:
+            data_dict = st.session_state['data']
+            
+            # Key metrics
+            st.subheader("📈 Latest Values")
+            cols = st.columns(len(data_dict))
+            
+            for idx, (name, df) in enumerate(data_dict.items()):
+                with cols[idx]:
+                    latest_value = df['Value'].iloc[-1]
+                    previous_value = df['Value'].iloc[-2] if len(df) > 1 else latest_value
+                    change = latest_value - previous_value
+                    
+                    st.metric(
+                        label=name,
+                        value=f"{latest_value:.2f}",
+                        delta=f"{change:.2f}"
+                    )
+            
+            # Time series visualization
+            st.subheader("📊 Trends Over Time")
+            
+            # Create combined plot
+            fig = go.Figure()
+            
+            for series_name, df in data_dict.items():
+                fig.add_trace(go.Scatter(
+                    x=df['Date'],
+                    y=df['Value'],
+                    mode='lines',
+                    name=series_name,
+                    line=dict(width=2)
+                ))
+            
+            fig.update_layout(
+                height=500,
+                hovermode='x unified',
+                xaxis_title="Date",
+                yaxis_title="Value",
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="right",
+                    x=1
                 )
-    
-    # Indicator selection
-    st.subheader("📊 Indicator Visualization")
-    
-    indicators = st.multiselect(
-        "Select indicators to visualize:",
-        numeric_cols,
-        default=numeric_cols[:min(3, len(numeric_cols))]
-    )
-    
-    if indicators:
-        # Time series chart
-        fig = go.Figure()
-        
-        for indicator in indicators:
-            fig.add_trace(go.Scatter(
-                x=df_filtered['Date'],
-                y=df_filtered[indicator],
-                mode='lines+markers',
-                name=indicator.replace('_', ' '),
-                line=dict(width=2),
-                marker=dict(size=4)
-            ))
-        
-        fig.update_layout(
-            title="Economic Indicators Over Time",
-            xaxis_title="Date",
-            yaxis_title="Value",
-            hovermode='x unified',
-            height=500,
-            legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1
-            )
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Statistical summary
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.subheader("📊 Statistical Summary")
-            summary_df = df_filtered[indicators].describe()
-            st.dataframe(summary_df, use_container_width=True)
-        
-        with col2:
-            st.subheader("📈 Recent Values")
-            recent_df = df_filtered[['Date'] + indicators].tail(10).sort_values('Date', ascending=False)
-            st.dataframe(recent_df, use_container_width=True, hide_index=True)
-        
-        # Correlation analysis
-        if len(indicators) > 1:
-            st.subheader("🔗 Correlation Analysis")
-            
-            corr_matrix = df_filtered[indicators].corr()
-            
-            fig_corr = px.imshow(
-                corr_matrix,
-                text_auto='.2f',
-                aspect="auto",
-                color_continuous_scale='RdBu_r',
-                zmin=-1,
-                zmax=1,
-                title="Correlation Matrix"
             )
             
-            fig_corr.update_layout(height=400)
-            st.plotly_chart(fig_corr, use_container_width=True)
-        
-        # Distribution analysis
-        st.subheader("📉 Distribution Analysis")
-        
-        selected_indicator = st.selectbox(
-            "Select an indicator for distribution:",
-            indicators
-        )
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            fig_hist = px.histogram(
-                df_filtered,
-                x=selected_indicator,
-                nbins=30,
-                title=f"Distribution of {selected_indicator.replace('_', ' ')}"
-            )
-            st.plotly_chart(fig_hist, use_container_width=True)
-        
-        with col2:
-            fig_box = px.box(
-                df_filtered,
-                y=selected_indicator,
-                title=f"Box Plot of {selected_indicator.replace('_', ' ')}"
-            )
-            st.plotly_chart(fig_box, use_container_width=True)
-    
-    # Raw data view
-    with st.expander("🔍 View Raw Data"):
-        st.dataframe(df_filtered, use_container_width=True, hide_index=True)
-        
-        # Download button
-        csv = df_filtered.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="📥 Download filtered data as CSV",
-            data=csv,
-            file_name='economic_indicators_filtered.csv',
-            mime='text/csv'
-        )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Individual series plots
+            st.subheader("📉 Individual Series")
+            
+            tabs = st.tabs(list(data_dict.keys()))
+            
+            for idx, (series_name, df) in enumerate(data_dict.items()):
+                with tabs[idx]:
+                    # Line chart
+                    fig = px.line(
+                        df,
+                        x='Date',
+                        y='Value',
+                        title=f"{series_name} Over Time"
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Statistics
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown("**Statistics**")
+                        stats_df = df['Value'].describe().to_frame()
+                        st.dataframe(stats_df, use_container_width=True)
+                    
+                    with col2:
+                        st.markdown("**Recent Values**")
+                        recent = df.tail(10).sort_values('Date', ascending=False)
+                        st.dataframe(recent, use_container_width=True, hide_index=True)
+            
+            # Download data
+            st.subheader("💾 Download Data")
+            
+            # Combine all series into one dataframe
+            combined_df = None
+            for series_name, df in data_dict.items():
+                df_copy = df.copy()
+                df_copy = df_copy.rename(columns={'Value': series_name})
+                
+                if combined_df is None:
+                    combined_df = df_copy
+                else:
+                    combined_df = combined_df.merge(
+                        df_copy,
+                        on='Date',
+                        how='outer'
+                    )
+            
+            if combined_df is not None:
+                csv = combined_df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="📥 Download All Data as CSV",
+                    data=csv,
+                    file_name=f"fred_data_{datetime.now().strftime('%Y%m%d')}.csv",
+                    mime="text/csv"
+                )
+        else:
+            st.info("👈 Click 'Fetch Data' in the sidebar to load economic indicators")
+    else:
+        st.info("👈 Select at least one indicator from the sidebar")
 
 else:
-    # Instructions when no data is loaded
-    st.info("👈 Please select a data source from the sidebar to get started")
+    # No API key - show sample data option
+    st.info("👈 Enter your FRED API key in the sidebar to fetch real data")
     
+    if st.button("📊 Load Sample Data Instead"):
+        df = generate_sample_data()
+        
+        # Display sample data
+        st.subheader("📈 Sample Economic Indicators")
+        
+        numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
+        
+        # Metrics
+        cols = st.columns(len(numeric_cols))
+        for idx, col in enumerate(numeric_cols):
+            with cols[idx]:
+                st.metric(
+                    label=col.replace('_', ' '),
+                    value=f"{df[col].iloc[-1]:.2f}"
+                )
+        
+        # Chart
+        fig = px.line(
+            df,
+            x='Date',
+            y=numeric_cols,
+            title="Sample Economic Indicators"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.dataframe(df, use_container_width=True)
+    
+    # Instructions
     st.markdown("""
     ### Getting Started
     
-    **Option 1: Upload CSV**
-    - Upload your own economic indicators CSV file
-    - First column should be dates, other columns should be numeric indicators
+    **To use real FRED data:**
+    1. Get a free API key from [FRED](https://fred.stlouisfed.org/docs/api/api_key.html)
+    2. Enter it in the sidebar
+    3. Select indicators and date range
+    4. Click "Fetch Data"
     
-    **Option 2: Use FRED API**
-    - Get a free API key from [FRED](https://fred.stlouisfed.org/docs/api/api_key.html)
-    - Access 800,000+ economic time series
-    
-    **Option 3: Sample Data**
-    - Explore the dashboard with pre-loaded sample data
-    - Includes GDP Growth, Unemployment, Inflation, and Interest Rates
-    
-    ### Expected CSV Format
-    ```
-    Date,GDP_Growth,Unemployment_Rate,Inflation_Rate
-    2020-01-01,2.1,3.6,2.5
-    2020-02-01,2.3,3.5,2.3
-    ...
+    **Or use Streamlit Secrets (recommended for deployment):**
+    1. Go to your app settings in Streamlit Cloud
+    2. Add to secrets.toml:
+    ```toml
+    FRED_API_KEY = "your_api_key_here"
     ```
     """)
 
@@ -307,9 +317,7 @@ else:
 st.sidebar.markdown("---")
 st.sidebar.markdown("### About")
 st.sidebar.info("""
-This dashboard allows you to:
-- Visualize economic indicators over time
-- Analyze correlations between indicators
-- View statistical summaries
-- Export filtered data
+This dashboard fetches economic data from the Federal Reserve Economic Data (FRED) API.
+
+Available indicators can be customized in fred_series.json or use the defaults.
 """)
