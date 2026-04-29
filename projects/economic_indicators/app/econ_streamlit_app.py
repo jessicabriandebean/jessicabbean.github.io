@@ -94,7 +94,7 @@ def fetch_fred_data(series_id, api_key, start_date=None, end_date=None):
 # Sample data generator (fallback)
 def generate_sample_data():
     """Generate sample economic data"""
-    dates = pd.date_range(start='2020-01-01', end='2024-12-31', freq='M')
+    dates = pd.date_range(start='2020-01-01', end='2024-12-31', freq='ME')
     data = {
         'Date': dates,
         'GDP_Growth': [2.1 + i*0.1 for i in range(len(dates))],

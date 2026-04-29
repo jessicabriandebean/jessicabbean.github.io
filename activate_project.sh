@@ -75,4 +75,4 @@ case "$1" in
         ;;
 esac
 
-chmod +x activate_project.sh
+#chmod +x activate_project.sh
