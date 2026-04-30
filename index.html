@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
@@ -18,17 +19,24 @@
             background: #ffffff;
             scroll-behavior: smooth;
         }
-        
+
         /* Loading Animation */
         .fade-in {
             animation: fadeIn 0.8s ease-in;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         /* Navigation */
         nav {
             background: #ffffff;
@@ -37,9 +45,9 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-        
+
         nav .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -48,30 +56,30 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         nav .logo {
             font-size: 1.25rem;
             font-weight: 700;
             color: #2d3748;
         }
-        
+
         nav ul {
             display: flex;
             list-style: none;
             gap: 2rem;
         }
-        
+
         nav a {
             color: #4a5568;
             text-decoration: none;
             transition: color 0.3s;
             font-weight: 500;
         }
-        
+
         nav a:hover {
             color: #667eea;
         }
-        
+
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -79,20 +87,20 @@
             padding: 8rem 2rem 6rem;
             text-align: center;
         }
-        
+
         .hero h1 {
             font-size: 3.5rem;
             margin-bottom: 0.5rem;
             font-weight: 700;
         }
-        
+
         .hero h2 {
             font-size: 1.75rem;
             margin-bottom: 1rem;
             font-weight: 400;
             opacity: 0.95;
         }
-        
+
         .hero p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
@@ -101,14 +109,14 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .hero-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
         }
-        
+
         .btn {
             padding: 0.875rem 2rem;
             border-radius: 6px;
@@ -117,62 +125,62 @@
             transition: all 0.3s;
             display: inline-block;
         }
-        
+
         .btn-primary {
             background: white;
             color: #667eea;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-        
+
         .btn-secondary {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 2px solid white;
         }
-        
+
         .btn-secondary:hover {
             background: white;
             color: #667eea;
         }
-        
+
         /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
+
         section {
             padding: 5rem 2rem;
         }
-        
+
         section h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
             color: #2d3748;
             font-weight: 700;
         }
-        
+
         section .subtitle {
             color: #2d3748;
             margin-bottom: 3rem;
             font-size: 1.25rem;
         }
-        
+
         /* About Section */
         #about {
             background: #f7fafc;
         }
-        
+
         /* About Section */
         #about {
             background: white;
         }
-        
+
         .about-content {
             max-width: 800px;
             margin: 0 auto;
@@ -181,17 +189,17 @@
             gap: 3rem;
             align-items: center;
         }
-        
+
         .profile-img {
             width: 100%;
             border-radius: 50%;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .about-content p {
             margin-bottom: 1.5rem;
         }
-        
+
         /* Projects Section */
         .projects-grid {
             display: grid;
@@ -200,21 +208,21 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         .project-card {
             background: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
             transition: all 0.3s;
             border: 1px solid #e2e8f0;
         }
-        
+
         .project-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
-        
+
         .project-image {
             width: 100%;
             height: 220px;
@@ -225,38 +233,38 @@
             font-size: 3rem;
             color: white;
         }
-        
+
         .project-content {
             padding: 2rem;
         }
-        
+
         .project-card h3 {
             color: #2d3748;
             margin-bottom: 0.75rem;
             font-size: 1.5rem;
             font-weight: 700;
         }
-        
+
         .project-tech {
             color: #718096;
             font-size: 0.9rem;
             margin-bottom: 1rem;
             font-weight: 500;
         }
-        
+
         .project-description {
             color: #4a5568;
             margin-bottom: 1.5rem;
             line-height: 1.6;
         }
-        
+
         .project-metrics {
             display: flex;
             gap: 1rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
-        
+
         .metric {
             background: #edf2f7;
             color: #2d3748;
@@ -265,13 +273,13 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
-        
+
         .project-links {
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
         }
-        
+
         .project-link {
             padding: 0.625rem 1.25rem;
             border-radius: 6px;
@@ -283,92 +291,92 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .link-demo {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-        
+
         .link-demo:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
-        
+
         .link-code {
             background: #2d3748;
             color: white;
         }
-        
+
         .link-code:hover {
             background: #1a202c;
         }
-        
+
         .link-blog {
             background: #edf2f7;
             color: #2d3748;
         }
-        
+
         .link-blog:hover {
             background: #e2e8f0;
         }
-        
+
         /* Blog Section */
         #blog {
             background: #f7fafc;
         }
-        
+
         .blog-grid {
             display: grid;
             gap: 2rem;
             max-width: 900px;
             margin: 0 auto;
         }
-        
+
         .blog-post {
             background: white;
             padding: 2rem;
             border-radius: 8px;
             border-left: 4px solid #667eea;
             transition: all 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-        
+
         .blog-post:hover {
             transform: translateX(8px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         .blog-post h3 {
             color: #2d3748;
             margin-bottom: 0.5rem;
             font-size: 1.5rem;
         }
-        
+
         .blog-post h3 a {
             color: #2d3748;
             text-decoration: none;
         }
-        
+
         .blog-post h3 a:hover {
             color: #667eea;
         }
-        
+
         .blog-meta {
             color: #718096;
             font-size: 0.9rem;
             margin-bottom: 0.75rem;
         }
-        
+
         .blog-excerpt {
             color: #4a5568;
             line-height: 1.6;
         }
-        
+
         /* Skills Section */
         #skills {
             background: white;
         }
-        
+
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -376,26 +384,26 @@
             max-width: 1000px;
             margin: 0 auto;
         }
-        
+
         .skill-category {
             background: #f7fafc;
             padding: 2rem;
             border-radius: 8px;
             border-top: 4px solid #667eea;
         }
-        
+
         .skill-category h3 {
             color: #2d3748;
             margin-bottom: 1rem;
             font-size: 1.25rem;
         }
-        
+
         .skill-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
         }
-        
+
         .skill-tag {
             background: white;
             padding: 0.5rem 1rem;
@@ -404,18 +412,18 @@
             color: #4a5568;
             border: 1px solid #e2e8f0;
         }
-        
+
         /* Contact Section */
         #contact {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
         }
-        
+
         #contact h2 {
             color: white;
         }
-        
+
         .contact-links {
             display: flex;
             justify-content: center;
@@ -423,7 +431,7 @@
             margin-top: 2rem;
             flex-wrap: wrap;
         }
-        
+
         .contact-link {
             color: white;
             font-size: 1.1rem;
@@ -433,15 +441,15 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 6px;
         }
-        
+
         .contact-link:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
         }
-        
+
         /* Footer */
         footer {
             background: #2d3748;
@@ -449,31 +457,32 @@
             text-align: center;
             padding: 2rem;
         }
-        
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
             }
-            
+
             .hero h2 {
                 font-size: 1.25rem;
             }
-            
+
             nav ul {
                 gap: 1rem;
             }
-            
+
             .projects-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             section {
                 padding: 3rem 1rem;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav>
@@ -485,7 +494,8 @@
                 <li><a href="#blog">Blog</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="Pricing_Page.html" target="_blank" rel="noopener noreferrer">Publisher Conversion</a></li>
+                <li><a href="Pricing_Page_Final.html" target="_blank" rel="noopener noreferrer">Publisher Conversion</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -509,13 +519,21 @@
             <div class="about-content">
                 <img src="my_image.jpg" alt="Jessica Bean" class="profile-img">
                 <div>
-                <p>I'm a data scientist with <strong>10+ years of experience</strong> leveraging advanced analytics and machine learning to drive decision-making in the federal government. My work has directly impacted millions of people through data-driven policy recommendations and operational improvements.</p>
-                
-                <p>Now, I'm transitioning to the private sector to apply my expertise in <strong>economics, finance, marketing analytics, and ethical AI</strong> to solve complex business challenges. I bring a unique perspective shaped by working with massive datasets, ensuring regulatory compliance, and translating technical insights for diverse audiences.</p>
-                
-                <p><strong>What drives me:</strong> The intersection of rigorous analysis and real-world impact. Whether forecasting economic trends or optimizing investment, I'm passionate about building data solutions that create measurable value.</p>
+                    <p>I'm a data scientist with <strong>10+ years of experience</strong> leveraging advanced analytics
+                        and machine learning to drive decision-making in the federal government. My work has directly
+                        impacted millions of people through data-driven policy recommendations and operational
+                        improvements.</p>
+
+                    <p>Now, I'm transitioning to the private sector to apply my expertise in <strong>economics, finance,
+                            marketing analytics, and ethical AI</strong> to solve complex business challenges. I bring a
+                        unique perspective shaped by working with massive datasets, ensuring regulatory compliance, and
+                        translating technical insights for diverse audiences.</p>
+
+                    <p><strong>What drives me:</strong> The intersection of rigorous analysis and real-world impact.
+                        Whether forecasting economic trends or optimizing investment, I'm passionate about building data
+                        solutions that create measurable value.</p>
+                </div>
             </div>
-        </div>
     </section>
 
     <!-- Projects Section -->
@@ -523,8 +541,9 @@
         <div class="container">
             <h2>Featured Projects</h2>
             <p class="subtitle">End-to-end data science solutions showcasing technical depth and business impact</p>
-            <p class="subtitle">Due to the proprietary nature of my actual work product this is for demo purposes only</p>
-            
+            <p class="subtitle">Due to the proprietary nature of my actual work product this is for demo purposes only
+            </p>
+
             <div class="projects-grid">
                 <!-- Project 1: Economic Forecasting -->
                 <div class="project-card">
@@ -533,7 +552,8 @@
                         <h3>Economic Indicator Forecasting</h3>
                         <p class="project-tech">Python • Prophet • Streamlit • FRED API • Time Series</p>
                         <p class="project-description">
-                            Interactive platform forecasting unemployment, inflation, and GDP using multiple time series models. Automated data pipeline with real-time visualizations and model comparison.
+                            Interactive platform forecasting unemployment, inflation, and GDP using multiple time series
+                            models. Automated data pipeline with real-time visualizations and model comparison.
                         </p>
                         <div class="project-metrics">
                             <span class="metric">5.4% MAPE</span>
@@ -544,7 +564,8 @@
                             <a href="https://econ-indicators.streamlit.app" class="project-link link-demo">
                                 🔗 Live Demo
                             </a>
-                            <a href="https://github.com/jessicabriandebean/jessicabriandebean.github.io/tree/main/projects/economic_indicators/README.md" class="project-link link-code">
+                            <a href="https://github.com/jessicabriandebean/jessicabriandebean.github.io/tree/main/projects/economic_indicators/README.md"
+                                class="project-link link-code">
                                 💻 Code
                             </a>
                             <a href="blog/under-editorial-review/index.html" class="project-link link-blog">
@@ -561,7 +582,8 @@
                         <h3>S&P 500 Optimization</h3>
                         <p class="project-tech">Python • Optimizarion • Modern Theory • Risk Analysis</p>
                         <p class="project-description">
-                            Advanced optimization platform implementing multiple algorithms (Max Sharpe, Black-Litterman, Risk Parity) with comprehensive risk metrics and backtesting.
+                            Advanced optimization platform implementing multiple algorithms (Max Sharpe,
+                            Black-Litterman, Risk Parity) with comprehensive risk metrics and backtesting.
                         </p>
                         <div class="project-metrics">
                             <span class="metric">2.07 Sharpe</span>
@@ -569,10 +591,12 @@
                             <span class="metric">500 Stocks</span>
                         </div>
                         <div class="project-links">
-                            <a href="https://jessicabriandebean-jes-projectsportfolio-optimizationapp-zpkz6b.streamlit.app/" class="project-link link-demo">
+                            <a href="https://jessicabriandebean-jes-projectsportfolio-optimizationapp-zpkz6b.streamlit.app/"
+                                class="project-link link-demo">
                                 🔗 Live Demo
                             </a>
-                            <a href="https://github.com/jessicabriandebean/jessicabriandebean.github.io/blob/main/projects/portfolio_optimization/README.md" class="project-link link-code">
+                            <a href="https://github.com/jessicabriandebean/jessicabriandebean.github.io/blob/main/projects/portfolio_optimization/README.md"
+                                class="project-link link-code">
                                 💻 Code
                             </a>
                             <a href="blog/under-editorial-review/index.html" class="project-link link-blog">
@@ -589,7 +613,8 @@
                         <h3>KPI Recommender System</h3>
                         <p class="project-tech">Python • Streamlit • Scikit-learn • ML Ethics</p>
                         <p class="project-description">
-                            Open-source toolkit identifying and mitigating bias in ML models. Implements 8 fairness metrics with automated reporting and remediation suggestions deployed as REST API.
+                            Open-source toolkit identifying and mitigating bias in ML models. Implements 8 fairness
+                            metrics with automated reporting and remediation suggestions deployed as REST API.
                         </p>
                         <div class="project-metrics">
                             <span class="metric">8 Metrics</span>
@@ -600,7 +625,8 @@
                             <a href="https://kpi-recommend.streamlit.app/" class="project-link link-demo">
                                 🔗 Demo
                             </a>
-                            <a href="https://github.com/jessicabriandebean/jessicabriandebean.github.io/tree/main/projects/kpi_recommender_system/README.md" class="project-link link-code">
+                            <a href="https://github.com/jessicabriandebean/jessicabriandebean.github.io/tree/main/projects/kpi_recommender_system/README.md"
+                                class="project-link link-code">
                                 💻 Code
                             </a>
                             <a href="blog/under-construction/index.html" class="project-link link-blog">
@@ -610,33 +636,35 @@
                     </div>
                 </div>
 
-          <!-- Project 4: Product Analytics -->
-            <div class="project-card">
-                <div class="project-image">⚖️</div>
-                <div class="project-content">
-                    <h3>Product Analytics</h3>
-                    <p class="project-tech">Python • Streamlit • Scikit-learn • ML Ethics</p>
-                    <p class="project-description">
-                        Built a comprehensive product analytics platform tracking user behavior, feature adoption, retention, and growth metrics with churn prediction models. REST API with automated reporting.
-                    </p>
-                    <div class="project-metrics">
-                        <span class="metric">8 Metrics</span>
-                        <span class="metric">REST API</span>
-                        <span class="metric">Open Source</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="projects/project-in-progress/index.html" class="project-link link-demo">
-                            🔗 Demo
-                        </a>
-                        <a href="projects/project-in-progress/index.html" class="project-link link-code">
-                            💻 Code
-                        </a>
-                        <a href="blog/under-construction/index.html" class="project-link link-blog">
-                            📄 Article
-                        </a>
+                <!-- Project 4: Product Analytics -->
+                <div class="project-card">
+                    <div class="project-image">⚖️</div>
+                    <div class="project-content">
+                        <h3>Product Analytics</h3>
+                        <p class="project-tech">Python • Streamlit • Scikit-learn • ML Ethics</p>
+                        <p class="project-description">
+                            Built a comprehensive product analytics platform tracking user behavior, feature adoption,
+                            retention, and growth metrics with churn prediction models. REST API with automated
+                            reporting.
+                        </p>
+                        <div class="project-metrics">
+                            <span class="metric">8 Metrics</span>
+                            <span class="metric">REST API</span>
+                            <span class="metric">Open Source</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="projects/project-in-progress/index.html" class="project-link link-demo">
+                                🔗 Demo
+                            </a>
+                            <a href="projects/project-in-progress/index.html" class="project-link link-code">
+                                💻 Code
+                            </a>
+                            <a href="blog/under-construction/index.html" class="project-link link-blog">
+                                📄 Article
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
     </section>
 
@@ -645,37 +673,44 @@
         <div class="container">
             <h2>Blog & Technical Writing</h2>
             <p class="subtitle">Deep dives into data science projects, methodologies, and career insights</p>
-            
+
             <div class="blog-grid">
                 <div class="blog-post">
-                    <h3><a href="blog/under-editorial-review/index.html">Building an Economic Forecasting Platform: A Data Science Journey</a></h3>
+                    <h3><a href="blog/under-editorial-review/index.html">Building an Economic Forecasting Platform: A
+                            Data Science Journey</a></h3>
                     <p class="blog-meta">15 min read • Data Science, Time Series, Python</p>
                     <p class="blog-excerpt">
-                        How I built an automated forecasting system for economic indicators using Prophet, ARIMA, and LSTM. Includes data pipeline design, model selection methodology, and deployment strategies.
+                        How I built an automated forecasting system for economic indicators using Prophet, ARIMA, and
+                        LSTM. Includes data pipeline design, model selection methodology, and deployment strategies.
                     </p>
                 </div>
 
                 <div class="blog-post">
-                    <h3><a href="blog/under-editorial-review/index.html">Modern Theory in Practice: Optimizing S&P 500</a></h3>
+                    <h3><a href="blog/under-editorial-review/index.html">Modern Theory in Practice: Optimizing S&P
+                            500</a></h3>
                     <p class="blog-meta">12 min read • Finance, Optimization, Python</p>
                     <p class="blog-excerpt">
-                        Deep dive into implementing multiple optimization algorithms. Learn about the efficient frontier, risk parity, Black-Litterman model, and walk-forward backtesting.
+                        Deep dive into implementing multiple optimization algorithms. Learn about the efficient
+                        frontier, risk parity, Black-Litterman model, and walk-forward backtesting.
                     </p>
                 </div>
 
                 <div class="blog-post">
-                    <h3><a href="blog/under-review-courtesy/index.html">Transitioning from Federal Government to Private Sector Data Science</a></h3>
+                    <h3><a href="blog/under-review-courtesy/index.html">Transitioning from Federal Government to Private
+                            Sector Data Science</a></h3>
                     <p class="blog-meta">8 min read • Career, Transition, Advice</p>
                     <p class="blog-excerpt">
-                        Lessons learned from transitioning out of government. How to position your experience, build an online presence, and prepare for interviews in the private sector.
+                        Lessons learned from transitioning out of government. How to position your experience, build an
+                        online presence, and prepare for interviews in the private sector.
                     </p>
                 </div>
-                
+
                 <div class="blog-post">
                     <h3><a href="blog/under-editorial-review/index.html">KPI Builder and Simulation</a></h3>
                     <p class="blog-meta">8 min read • KPI, Recommnder, Live Demo</p>
                     <p class="blog-excerpt">
-                        Built a database structure for import of your KPI's to determine the actions needed to improve key performers based on business objective.
+                        Built a database structure for import of your KPI's to determine the actions needed to improve
+                        key performers based on business objective.
                     </p>
                 </div>
 
@@ -683,13 +718,14 @@
                     <h3><a href="blog/under-construction/index.html">Product Analytics</a></h3>
                     <p class="blog-meta">10 min read • ML Ethics, Fairness, Python</p>
                     <p class="blog-excerpt">
-                        A comprehensive product analytics platform for tracking user behavior, feature adoption, retention, and growth metrics.
+                        A comprehensive product analytics platform for tracking user behavior, feature adoption,
+                        retention, and growth metrics.
                     </p>
                 </div>
             </div>
         </div>
-        
-                    
+
+
     </section>
 
     <!-- Skills Section -->
@@ -697,7 +733,7 @@
         <div class="container">
             <h2>Technical Skills</h2>
             <p class="subtitle">Full-stack data science with emphasis on production-ready solutions</p>
-            
+
             <div class="skills-grid">
                 <div class="skill-category">
                     <h3>Programming & Data</h3>
@@ -755,7 +791,7 @@
         <div class="container">
             <h2>Let's Connect</h2>
             <p class="subtitle">Open to data science roles in finance, marketing, consulting, and tech</p>
-            
+
             <div class="contact-links">
                 <a href="mailto:jessicabbean@gmail.com" class="contact-link">
                     📧 Email
@@ -794,82 +830,19 @@
         // Add scroll effect to nav
         let lastScroll = 0;
         const nav = document.querySelector('nav');
-        
+
         window.addEventListener('scroll', () => {
             const currentScroll = window.pageYOffset;
-            
+
             if (currentScroll > 100) {
                 nav.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
             } else {
                 nav.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
             }
-            
+
             lastScroll = currentScroll;
         });
     </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
