@@ -423,7 +423,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Your Name**
 
 - 🌐 Portfolio: [portfolio.github.io]((https://github.com/jessicabriandebean/jessicabriandebean.github.io))
-- 💼 LinkedIn: [linkedin.com/in/yourprofile](www.linkedin.com/in/jessicabbean)
+- 💼 LinkedIn: [linkedin.com/in/jessicabbdean](www.linkedin.com/in/jessicabbean)
 - 📧 Email: jessicabbean@gmail.com
 - 🐙 GitHub: [@jessicabrindebean](https://github.com/jessicabriandebean)
 
